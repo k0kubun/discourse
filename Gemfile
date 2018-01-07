@@ -192,3 +192,4 @@ if ENV["IMPORT"] == "1"
   gem 'redcarpet'
   gem 'sqlite3', '~> 1.3.13'
 end
+gem 'rack-stackprof'
