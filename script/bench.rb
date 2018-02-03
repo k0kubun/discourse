@@ -176,6 +176,7 @@ begin
 
   pid = if @unicorn
           ENV['UNICORN_PORT'] = @port.to_s
+          ENV['RUBYOPT'] = ENV['BENCH_RUBYOPT'] if ENV.key?('BENCH_RUBYOPT')
           FileUtils.mkdir_p(File.join('tmp', 'pids'))
           spawn("bundle exec unicorn -c config/unicorn.conf.rb")
         else
