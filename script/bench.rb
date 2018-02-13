@@ -38,6 +38,9 @@ opts = OptionParser.new do |o|
   o.on("-u", "--unicorn", "Use unicorn to serve pages as opposed to thin") do
     @unicorn = true
   end
+  o.on("-p", "--puma", "Use puma to serve pages as opposed to thin") do
+    @puma = true
+  end
 end
 opts.parse!
 
@@ -179,6 +182,9 @@ begin
           ENV['RUBYOPT'] = ENV['BENCH_RUBYOPT'] if ENV.key?('BENCH_RUBYOPT')
           FileUtils.mkdir_p(File.join('tmp', 'pids'))
           spawn("bundle exec unicorn -c config/unicorn.conf.rb")
+        elsif @puma
+          ENV['RUBYOPT'] = ENV['BENCH_RUBYOPT'] if ENV.key?('BENCH_RUBYOPT')
+          spawn("bundle exec puma -p #{@port}")
         else
           spawn("bundle exec thin start -p #{@port}")
         end
