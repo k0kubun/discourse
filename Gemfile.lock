@@ -236,7 +236,7 @@ GEM
     pry-rails (0.3.4)
       pry (>= 0.9.10)
     public_suffix (2.0.5)
-    puma (3.6.0)
+    puma (3.11.4)
     r2 (0.2.6)
     rack (1.6.8)
     rack-mini-profiler (0.10.4)
@@ -491,4 +491,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.15.4
+   1.16.1
