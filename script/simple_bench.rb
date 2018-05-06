@@ -20,33 +20,35 @@ module SimpleBench
   class << self
     def percentile(times)
       app = Rack::MockRequest.new(Rails.application)
-      durations = []
+      api_key = `bundle exec rake api_key:get`.split("\n")[-1]
 
       path = '/'
-      params = {}
+      params = { api_key: api_key, api_username: 'admin1' }
+      full_path = "#{path}?#{params.to_query}"
+      headers = {}
 
       # warmup
       warms = times / 10
       warms.times do |i|
-        app.get(path, params)
+        app.get(full_path, headers)
         print "\rwarmup: #{i + 1}/#{warms}"
       end
       puts
 
       # benchmark
+      durations = []
       i = 0
       while i < times
         started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        app.get(path, params)
+        app.get(full_path, headers)
         duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started_at
 
         durations << duration
         i += 1
         print "\rbenchmark: #{i}/#{times}"
       end
-      puts "\ntotal time: #{"%.1f" % durations.inject(&:+)}s"
 
-      puts "\nGET #{path}:"
+      puts "\n\nGET #{path}:"
       show_percentiles(durations)
     end
 
@@ -75,6 +77,7 @@ module SimpleBench
       results.each do |percentile, duration|
         puts "  #{percentile}: #{"%.1f" % (duration * 1000)}ms"
       end
+      puts
     end
   end
 end
