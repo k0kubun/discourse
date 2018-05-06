@@ -116,3 +116,5 @@ vendor/bundle/*
 
 #ignore jetbrains ide file
 *.iml
+
+/index.html
