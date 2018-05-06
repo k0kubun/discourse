@@ -118,3 +118,4 @@ vendor/bundle/*
 *.iml
 
 /index.html
+/stackprof.dump

@@ -20,7 +20,7 @@ module SimpleBench
   class << self
     def percentile(times)
       app = Rack::MockRequest.new(Rails.application)
-      api_key = `bundle exec rake api_key:get`.split("\n")[-1]
+      api_key = fetch_api_key
 
       path = '/'
       params = { api_key: api_key, api_username: 'admin1' }
@@ -52,13 +52,33 @@ module SimpleBench
       show_percentiles(durations)
     end
 
-    def stackprof
-      StackProf.start(mode: :cpu, interval: 10, out: "#{RUBY_VERSION}.dump")
-      # xxx: tbd
-      StackProf.stop
+    def profile
+      require 'stackprof'
+
+      app = Rack::MockRequest.new(Rails.application)
+      api_key = fetch_api_key
+
+      path = '/'
+      params = { api_key: api_key, api_username: 'admin1' }
+      full_path = "#{path}?#{params.to_query}"
+      headers = {}
+
+      5.times { app.get(full_path, headers) } # warmup
+
+      StackProf.run(mode: :wall, interval: 100, out: 'stackprof.dump') do
+        i = 0
+        while i < 10
+          app.get(full_path, headers)
+          i += 1
+        end
+      end
     end
 
     private
+
+    def fetch_api_key
+      `bundle exec rake api_key:get`.split("\n")[-1]
+    end
 
     def show_percentiles(durations)
       percentiles = PERCENTILES.dup
@@ -84,4 +104,5 @@ end
 
 # todo: mkdir -p tmp/letter_avatars
 
-SimpleBench.percentile(Integer(ARGV.first) || 100)
+SimpleBench.percentile(Integer(ARGV.first || 100))
+#SimpleBench.profile
