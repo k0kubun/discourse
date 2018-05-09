@@ -36,19 +36,19 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  before_filter :handle_theme
-  before_filter :set_current_user_for_logs
-  before_filter :clear_notifications
-  before_filter :set_locale
-  before_filter :set_mobile_view
-  before_filter :block_if_readonly_mode
-  before_filter :authorize_mini_profiler
-  before_filter :preload_json
-  before_filter :redirect_to_login_if_required
-  before_filter :check_xhr
-  after_filter  :add_readonly_header
-  after_filter  :perform_refresh_session
-  after_filter  :dont_cache_page
+  # before_filter :handle_theme
+  # before_filter :set_current_user_for_logs
+  # before_filter :clear_notifications
+  # before_filter :set_locale
+  # before_filter :set_mobile_view
+  # before_filter :block_if_readonly_mode
+  # before_filter :authorize_mini_profiler
+  # before_filter :preload_json
+  # before_filter :redirect_to_login_if_required
+  # before_filter :check_xhr
+  # after_filter  :add_readonly_header
+  # after_filter  :perform_refresh_session
+  # after_filter  :dont_cache_page
 
   layout :set_layout
 
