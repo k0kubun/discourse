@@ -11,6 +11,8 @@ module TopicListResponder
     respond_to do |format|
       format.html do
         @list = list
+        render text: -''
+        return
         store_preloaded(list.preload_key, MultiJson.dump(TopicListSerializer.new(list, scope: guardian)))
         render 'list/list'
       end
