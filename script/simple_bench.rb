@@ -28,12 +28,20 @@ module SimpleBench
       headers = {}
 
       # warmup
-      warms = times / 10
+      if RubyVM::MJIT.enabled?
+        warms = times
+      else
+        warms = 5
+      end
       warms.times do |i|
         app.get(full_path, headers)
         print "\rwarmup: #{i + 1}/#{warms}"
       end
       puts
+
+      if RubyVM::MJIT.enabled?
+        RubyVM::MJIT.stop
+      end
 
       # benchmark
       durations = []
