@@ -3,54 +3,54 @@ require_dependency 'topic_list_responder'
 class ListController < ApplicationController
   include TopicListResponder
 
-  # skip_before_filter :check_xhr
+  skip_before_filter :check_xhr
 
-  # before_filter :set_category, only: [
-  #   :category_default,
-  #   # filtered topics lists
-  #   Discourse.filters.map { |f| :"category_#{f}" },
-  #   Discourse.filters.map { |f| :"category_none_#{f}" },
-  #   Discourse.filters.map { |f| :"parent_category_category_#{f}" },
-  #   Discourse.filters.map { |f| :"parent_category_category_none_#{f}" },
-  #   # top summaries
-  #   :category_top,
-  #   :category_none_top,
-  #   :parent_category_category_top,
-  #   # top pages (ie. with a period)
-  #   TopTopic.periods.map { |p| :"category_top_#{p}" },
-  #   TopTopic.periods.map { |p| :"category_none_top_#{p}" },
-  #   TopTopic.periods.map { |p| :"parent_category_category_top_#{p}" },
-  #   # category feeds
-  #   :category_feed,
-  # ].flatten
+  before_filter :set_category, only: [
+    :category_default,
+    # filtered topics lists
+    Discourse.filters.map { |f| :"category_#{f}" },
+    Discourse.filters.map { |f| :"category_none_#{f}" },
+    Discourse.filters.map { |f| :"parent_category_category_#{f}" },
+    Discourse.filters.map { |f| :"parent_category_category_none_#{f}" },
+    # top summaries
+    :category_top,
+    :category_none_top,
+    :parent_category_category_top,
+    # top pages (ie. with a period)
+    TopTopic.periods.map { |p| :"category_top_#{p}" },
+    TopTopic.periods.map { |p| :"category_none_top_#{p}" },
+    TopTopic.periods.map { |p| :"parent_category_category_top_#{p}" },
+    # category feeds
+    :category_feed,
+  ].flatten
 
-  # before_filter :ensure_logged_in, except: [
-  #   :topics_by,
-  #   # anonymous filters
-  #   Discourse.anonymous_filters,
-  #   Discourse.anonymous_filters.map { |f| "#{f}_feed" },
-  #   # anonymous categorized filters
-  #   :category_default,
-  #   Discourse.anonymous_filters.map { |f| :"category_#{f}" },
-  #   Discourse.anonymous_filters.map { |f| :"category_none_#{f}" },
-  #   Discourse.anonymous_filters.map { |f| :"parent_category_category_#{f}" },
-  #   Discourse.anonymous_filters.map { |f| :"parent_category_category_none_#{f}" },
-  #   # category feeds
-  #   :category_feed,
-  #   # user topics feed
-  #   :user_topics_feed,
-  #   # top summaries
-  #   :top,
-  #   :category_top,
-  #   :category_none_top,
-  #   :parent_category_category_top,
-  #   # top pages (ie. with a period)
-  #   TopTopic.periods.map { |p| :"top_#{p}" },
-  #   TopTopic.periods.map { |p| :"top_#{p}_feed" },
-  #   TopTopic.periods.map { |p| :"category_top_#{p}" },
-  #   TopTopic.periods.map { |p| :"category_none_top_#{p}" },
-  #   TopTopic.periods.map { |p| :"parent_category_category_top_#{p}" },
-  # ].flatten
+  before_filter :ensure_logged_in, except: [
+    :topics_by,
+    # anonymous filters
+    Discourse.anonymous_filters,
+    Discourse.anonymous_filters.map { |f| "#{f}_feed" },
+    # anonymous categorized filters
+    :category_default,
+    Discourse.anonymous_filters.map { |f| :"category_#{f}" },
+    Discourse.anonymous_filters.map { |f| :"category_none_#{f}" },
+    Discourse.anonymous_filters.map { |f| :"parent_category_category_#{f}" },
+    Discourse.anonymous_filters.map { |f| :"parent_category_category_none_#{f}" },
+    # category feeds
+    :category_feed,
+    # user topics feed
+    :user_topics_feed,
+    # top summaries
+    :top,
+    :category_top,
+    :category_none_top,
+    :parent_category_category_top,
+    # top pages (ie. with a period)
+    TopTopic.periods.map { |p| :"top_#{p}" },
+    TopTopic.periods.map { |p| :"top_#{p}_feed" },
+    TopTopic.periods.map { |p| :"category_top_#{p}" },
+    TopTopic.periods.map { |p| :"category_none_top_#{p}" },
+    TopTopic.periods.map { |p| :"parent_category_category_top_#{p}" },
+  ].flatten
 
   # Create our filters
   Discourse.filters.each do |filter|
