@@ -27,6 +27,8 @@ test:
 
 # profile db is used for benchmarking using the script/bench.rb script
 profile:
+  user: k0kubun
+  localhost: 127.0.0.1
   prepared_statements: false
   adapter: postgresql
   database: discourse_profile

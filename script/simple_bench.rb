@@ -27,22 +27,6 @@ module SimpleBench
       full_path = "#{path}?#{params.to_query}"
       headers = {}
 
-      # warmup
-      if RubyVM::MJIT.enabled?
-        warms = times
-      else
-        warms = 5
-      end
-      warms.times do |i|
-        app.get(full_path, headers)
-        print "\rwarmup: #{i + 1}/#{warms}"
-      end
-      puts
-
-      if RubyVM::MJIT.enabled?
-        RubyVM::MJIT.stop
-      end
-
       # benchmark
       durations = []
       i = 0
@@ -85,7 +69,8 @@ module SimpleBench
     private
 
     def fetch_api_key
-      `bundle exec rake api_key:get`.split("\n")[-1]
+      #`bundle exec rake api_key:get`.split("\n")[-1]
+      "e5f4e98cc916bea219cb3b3395d85a5aa42118e45ca4b195d47e2ef80bbe4d22"
     end
 
     def show_percentiles(durations)
