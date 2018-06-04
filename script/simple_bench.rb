@@ -69,8 +69,8 @@ module SimpleBench
     private
 
     def fetch_api_key
-      #`bundle exec rake api_key:get`.split("\n")[-1]
-      "e5f4e98cc916bea219cb3b3395d85a5aa42118e45ca4b195d47e2ef80bbe4d22"
+      `bundle exec rake api_key:get`.split("\n")[-1]
+      #"e5f4e98cc916bea219cb3b3395d85a5aa42118e45ca4b195d47e2ef80bbe4d22"
     end
 
     def show_percentiles(durations)
