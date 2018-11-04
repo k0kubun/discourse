@@ -10,6 +10,7 @@ require "fileutils"
 @best_of = 1
 @mem_stats = false
 @unicorn = false
+@rubyenv = {}
 @dump_heap = false
 
 opts = OptionParser.new do |o|
@@ -37,6 +38,9 @@ opts = OptionParser.new do |o|
   end
   o.on("-u", "--unicorn", "Use unicorn to serve pages as opposed to thin") do
     @unicorn = true
+  end
+  o.on("--rubyopt [OPTIONS]") do |v|
+    @rubyenv['RUBYOPT'] = v
   end
 end
 opts.parse!
@@ -177,9 +181,9 @@ begin
   pid = if @unicorn
           ENV['UNICORN_PORT'] = @port.to_s
           FileUtils.mkdir_p(File.join('tmp', 'pids'))
-          spawn("bundle exec unicorn -c config/unicorn.conf.rb")
+          spawn(@rubyenv, "bundle exec unicorn -c config/unicorn.conf.rb")
         else
-          spawn("bundle exec thin start -p #{@port}")
+          spawn(@rubyenv, "bundle exec thin start -p #{@port}")
         end
 
   while port_available? @port

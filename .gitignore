@@ -117,5 +117,5 @@ vendor/bundle/*
 #ignore jetbrains ide file
 *.iml
 
-/index.html
+/index.html*
 /stackprof.dump

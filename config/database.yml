@@ -30,6 +30,7 @@ profile:
   prepared_statements: false
   adapter: postgresql
   database: discourse_profile
+  password: password
   min_messages: warning
   pool: 5
   timeout: 5000

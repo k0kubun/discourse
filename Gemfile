@@ -43,7 +43,7 @@ gem 'redis-namespace'
 
 gem 'active_model_serializers', '~> 0.8.3'
 
-gem 'onebox'
+gem 'onebox', git: 'https://github.com/k0kubun/onebox', ref: '843dba37d5efa5b21de2570850cbce1c0584901f'
 
 gem 'http_accept_language', '~>2.0.5', require: false
 
