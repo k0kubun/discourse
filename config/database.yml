@@ -30,6 +30,7 @@ profile:
   prepared_statements: false
   adapter: postgresql
   database: discourse_profile
+  user: k0kubun # for perf
   password: password
   min_messages: warning
   pool: 5

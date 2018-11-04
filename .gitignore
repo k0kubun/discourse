@@ -119,3 +119,4 @@ vendor/bundle/*
 
 /index.html*
 /stackprof.dump
+/perf.data*

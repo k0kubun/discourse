@@ -30,6 +30,13 @@ ruby script/bench.rb --unicorn --rubyopt="--jit"
 ruby script/simple_bench.rb
 ```
 
+To use perf,
+
+```bash
+export DISCOURSE_APIKEY="$(bundle exec rake api_key:get RAILS_ENV=profile)"
+sudo -E perf record -c 10000 ~/.rbenv/versions/2.5.0/bin/ruby script/simple_bench.rb
+```
+
 ## Copyright / License
 
 Copyright 2014 - 2017 Civilized Discourse Construction Kit, Inc.
