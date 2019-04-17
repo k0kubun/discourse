@@ -18,7 +18,7 @@ module SimpleBench
   ]
 
   class << self
-    def percentile(times)
+    def percentile(warmup:, benchmark:)
       app = Rack::MockRequest.new(Rails.application)
       api_key = fetch_api_key
 
@@ -28,25 +28,26 @@ module SimpleBench
       headers = {}
 
       # warmup
-      warms = times / 10
-      warms.times do |i|
+      warmup.times do |i|
         app.get(full_path, headers)
-        print "\rwarmup: #{i + 1}/#{warms}"
+        print "\rwarmup: #{i + 1}/#{warmup}"
       end
       puts
 
       # benchmark
       durations = []
       i = 0
-      while i < times
+      while i < benchmark
         started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         app.get(full_path, headers)
         duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started_at
 
         durations << duration
         i += 1
-        print "\rbenchmark: #{i}/#{times}"
+        print "\rbenchmark: #{i}/#{benchmark}"
       end
+
+      puts "\nRequest per second: #{'%.1f' % (benchmark / durations.inject(&:+))} [#/s] (mean)"
 
       puts "\n\nGET #{path}:"
       show_percentiles(durations)
@@ -104,5 +105,8 @@ end
 
 # todo: mkdir -p tmp/letter_avatars
 
-SimpleBench.percentile(Integer(ARGV.first || 100))
+SimpleBench.percentile(
+  warmup: Integer(ENV.fetch('WARMUP', 0)),
+  benchmark: Integer(ENV.fetch('BENCHMARK', 1000)),
+)
 #SimpleBench.profile
