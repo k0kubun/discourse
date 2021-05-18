@@ -123,6 +123,7 @@ gem 'mini_scheduler'
 
 gem 'execjs', require: false
 gem 'mini_racer'
+gem 'psych', '< 4' # building mini_racer relies on .unsafe_load by .load
 
 gem 'highline', require: false
 
