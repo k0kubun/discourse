@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'pinned_check'
+require 'topic_subtype'
+require 'theme_modifier_helper'
+require 'unread'
 class ListableTopicSerializer < BasicTopicSerializer
 
   attributes :reply_count,

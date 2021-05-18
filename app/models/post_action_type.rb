@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'flag_settings'
 class PostActionType < ActiveRecord::Base
   after_save :expire_cache
   after_destroy :expire_cache

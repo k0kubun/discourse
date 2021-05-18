@@ -2,6 +2,7 @@
 
 # base.rb uses this style of require, so maintain usage of it here
 
+require_relative 'user_email'
 module Jobs
   class CriticalUserEmail < UserEmail
 

@@ -932,6 +932,7 @@ Discourse::Application.routes.draw do
       end
     end
 
+    require 'homepage_constraint'
     Discourse.filters.each do |filter|
       root to: "list##{filter}", constraints: HomePageConstraint.new("#{filter}"), as: "list_#{filter}"
     end

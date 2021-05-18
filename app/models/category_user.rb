@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'notification_levels'
+require 'pretty_text'
 class CategoryUser < ActiveRecord::Base
   belongs_to :category
   belongs_to :user

@@ -2,6 +2,7 @@
 
 require_dependency 'distributed_cache'
 require_dependency 'stylesheet/compiler'
+require 'slug'
 
 module Stylesheet; end
 

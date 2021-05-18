@@ -5,6 +5,7 @@
 # the allows end users to always know which topics have unread posts in them
 # and which topics are new
 
+require 'topic_query'
 class TopicTrackingState
 
   include ActiveModel::SerializerSupport

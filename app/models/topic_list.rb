@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'user_lookup'
 class TopicList < DraftableList
   cattr_accessor :preloaded_custom_fields
   self.preloaded_custom_fields = Set.new

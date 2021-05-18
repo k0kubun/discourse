@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'letter_avatar'
 class User < ActiveRecord::Base
   include Searchable
   include Roleable

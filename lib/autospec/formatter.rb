@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+return
 
 require "rspec/core/formatters/base_text_formatter"
 require "parallel_tests/rspec/logger_base"

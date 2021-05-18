@@ -112,7 +112,7 @@ module Discourse
     # issue is image_optim crashes on missing dependencies
     config.assets.image_optim = false
 
-    config.autoloader = :zeitwerk
+    # config.autoloader = :zeitwerk
 
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += Dir["#{config.root}/app"]
@@ -125,7 +125,7 @@ module Discourse
     config.autoload_paths += Dir["#{config.root}/lib/i18n"]
     config.autoload_paths += Dir["#{config.root}/lib/validators/"]
 
-    Rails.autoloaders.main.ignore(Dir["#{config.root}/app/models/reports"])
+    # Rails.autoloaders.main.ignore(Dir["#{config.root}/app/models/reports"])
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.

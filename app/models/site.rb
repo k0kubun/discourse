@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # A class we can use to serialize the site data
+require 'trust_level'
 class Site
   include ActiveModel::Serialization
 

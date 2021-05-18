@@ -291,6 +291,7 @@ class Middleware::RequestTracker
     end
   end
 
+  require 'scheduler/defer'
   def log_later(data)
     Scheduler::Defer.later("Track view") do
       unless Discourse.pg_readonly_mode?

@@ -3,6 +3,7 @@
 require 'mini_racer'
 require 'nokogiri'
 require 'erb'
+require 'excerpt_parser'
 
 module PrettyText
   @mutex = Mutex.new

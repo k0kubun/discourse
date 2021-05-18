@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'site_icon_manager'
 class SiteSetting < ActiveRecord::Base
   extend GlobalPath
   extend SiteSettingExtension

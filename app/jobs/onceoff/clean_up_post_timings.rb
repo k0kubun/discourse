@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'onceoff'
 module Jobs
   class CleanUpPostTimings < ::Jobs::Onceoff
 
