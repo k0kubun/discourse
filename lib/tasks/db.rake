@@ -63,7 +63,7 @@ end
 task 'db:rollback' => ['environment', 'set_locale'] do |_, args|
   step = ENV["STEP"] ? ENV["STEP"].to_i : 1
   ActiveRecord::Base.connection.migration_context.rollback(step)
-  Rake::Task['db:_dump'].invoke
+  #Rake::Task['db:_dump'].invoke
 end
 
 # our optimized version of multisite migrate, we have many sites and we have seeds
@@ -200,7 +200,7 @@ task 'multisite:migrate' => ['db:load_config', 'environment', 'set_locale'] do |
   $stdout = old_stdout
   check_exceptions(exceptions)
 
-  Rake::Task['db:_dump'].invoke
+  #Rake::Task['db:_dump'].invoke
 end
 
 # we need to run seed_fu every time we run rake db:migrate
@@ -215,7 +215,7 @@ task 'db:migrate' => ['load_config', 'environment', 'set_locale'] do |_, args|
   ActiveRecord::Tasks::DatabaseTasks.migrate
 
   if !Discourse.is_parallel_test?
-    Rake::Task['db:_dump'].invoke
+    #Rake::Task['db:_dump'].invoke
   end
 
   SeedFu.quiet = true

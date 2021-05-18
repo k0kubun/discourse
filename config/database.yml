@@ -2,6 +2,8 @@ development:
   prepared_statements: false
   adapter: postgresql
   database: <%= ENV['DISCOURSE_DEV_DB'] || 'discourse_development' %>
+  host: 127.0.0.1
+  user: postgres
   min_messages: warning
   pool: 5
   timeout: 5000
@@ -34,6 +36,8 @@ test:
   prepared_statements: false
   adapter: postgresql
   database: <%= test_db %>
+  host: 127.0.0.1
+  user: postgres
   min_messages: warning
   pool: 5
   timeout: 5000
@@ -45,6 +49,8 @@ test:
 profile:
   prepared_statements: false
   adapter: postgresql
+  host: 127.0.0.1
+  user: postgres
   database: discourse_profile
   min_messages: warning
   pool: 5
