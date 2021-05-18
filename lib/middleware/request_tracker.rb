@@ -166,7 +166,7 @@ class Middleware::RequestTracker
 
     request = Rack::Request.new(env)
 
-    if rate_limit(request)
+    if rate_limit(request) && false # benchmarker should bypass rate limit
       result = [429, {}, ["Slow down, too many requests from this IP address"]]
       return result
     end

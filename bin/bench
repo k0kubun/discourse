@@ -1,0 +1,151 @@
+#!/usr/bin/env ruby
+
+puts RUBY_DESCRIPTION
+
+# Usage:
+#   WARMUP=0 BENCHMARK=10000 bin/bench
+#   PROFILE=wall INTERVAL=100 WARMUP=1 BENCHMARK=1000 bin/bench
+
+ENV['RAILS_ENV'] ||= 'profile'
+require_relative '../config/boot'
+require 'bundler/setup'
+require_relative '../config/environment'
+
+class Bench
+  def initialize(warmup:, benchmark:, path:)
+    @warmup = warmup
+    @benchmark = benchmark
+    @env = Rack::MockRequest.env_for(
+      path,
+      {
+        method: Rack::GET,
+        'HTTP_API_KEY' => api_key,
+        'HTTP_API_USERNAME' => 'admin1',
+      },
+    )
+
+    status, _, body = Rails.application.call(@env)
+    if status != 200
+      abort "===\n#{body.join}===\nExpected status to be 200 but got #{status}."
+    end
+  end
+
+  def measure
+    app = Rails.application
+    env = @env
+    clock = Process::CLOCK_MONOTONIC
+    warmup(app, env)
+    if defined?(RubyVM) && RubyVM.respond_to?(:reset_debug_counters)
+      RubyVM.reset_debug_counters
+    end
+    if defined?(RubyVM::MJIT) && RubyVM::MJIT.enabled?
+      RubyVM::MJIT.pause
+      app.call(env.dup) # issue recompile
+      RubyVM::MJIT.resume
+      RubyVM::MJIT.pause # finish recompile
+      app.call(env.dup) # issue recompile
+      RubyVM::MJIT.resume
+      RubyVM::MJIT.pause # finish recompile
+      app.call(env.dup)
+    end
+
+    if use_perf = ENV.key?('PERF')
+      pid = Process.spawn('perf', 'stat', '-p', Process.pid.to_s, '-e', 'task-clock,cycles,instructions,branches,branch-misses,cache-misses,cache-references,l1d_pend_miss.pending_cycles,l1d_pend_miss.pending_cycles_any,l2_rqsts.all_code_rd,l2_rqsts.code_rd_hit,dsb2mite_switches.penalty_cycles,icache.hit,icache.ifdata_stall,icache.ifetch_stall,icache.misses,idq.all_dsb_cycles_4_uops,idq.all_dsb_cycles_any_uops,idq.all_mite_cycles_4_uops,idq.all_mite_cycles_any_uops,idq.dsb_cycles,idq.dsb_uops,l2_rqsts.code_rd_hit,l2_rqsts.code_rd_miss')
+    end
+    durations = []
+    i = 0
+    while i < @benchmark
+      dup_env = env.dup
+      started_at = Process.clock_gettime(clock)
+      app.call(dup_env)
+      durations << Process.clock_gettime(clock) - started_at
+
+      i += 1
+      print "\rBenchmark: #{i}/#{@benchmark}"
+    end
+    if use_perf
+      Process.kill(:INT, pid)
+      Process.wait(pid)
+    end
+
+    puts "\rBenchmark: #{@benchmark} requests"
+    puts
+    puts "Request per second: #{'%.1f' % (@benchmark / durations.inject(&:+))} [#/s] (mean)"
+    puts
+    puts "Percentage of the requests served within a certain time (ms)"
+    show_percentiles(durations)
+  end
+
+  def profile(mode:, interval:)
+    require 'stackprof'
+    app = Rails.application
+    env = @env
+    warmup(app, env)
+
+    puts "Benchmarking #{@benchmark} requests..."
+    benchmark = @benchmark
+    started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    StackProf.run(mode: :wall, interval: interval, out: "stackprof-#{Time.now.to_s.gsub(/ /, '_')}.dump") do
+      i = 0
+      while i < benchmark
+        app.call(env)
+        i += 1
+      end
+    end
+    duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started_at
+
+    puts
+    puts "Request per second: #{'%.1f' % (@benchmark / duration)} [#/s] (mean)"
+  end
+
+  private
+
+  def warmup(app, env)
+    puts "Warming up..."
+    i = 0
+    while i < @warmup
+      app.call(env.dup)
+      i += 1
+      print "\rWarmup: #{i}/#{@warmup} "
+    end
+    puts "\rWarmup: #{@warmup} requests" if i > 0
+  end
+
+  def show_percentiles(durations)
+    percentiles = [50, 66, 75, 80, 90, 95, 98, 99, 100]
+    results = {}
+
+    durations.sort.each_with_index do |duration, index|
+      percentile = (index / durations.size.to_f) * 100
+      matched, percentiles = percentiles.partition { |threshold| percentile >= threshold }
+
+      matched.each do |match|
+        results[match] = duration
+      end
+      break if percentiles.empty?
+    end
+    results[100] = durations.max
+
+    results.each do |percentile, duration|
+      puts " #{"%3d" % percentile}% #{"%7.2f" % (duration * 1000)}"
+    end
+  end
+
+  def api_key
+    @api_key ||= ApiKey.create!(description: 'bin/bench').key
+  end
+end
+
+bench = Bench.new(
+  warmup: Integer(ENV.fetch('WARMUP', 0)),
+  benchmark: Integer(ENV.fetch('BENCHMARK', 10000)),
+  path: ARGV.first || '/',
+)
+if ENV.key?('PROFILE')
+  bench.profile(
+    mode: ENV['PROFILE'].to_sym,
+    interval: Integer(ENV.fetch('INTERVAL', 100)),
+  )
+else
+  bench.measure
+end
