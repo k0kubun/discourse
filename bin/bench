@@ -39,14 +39,17 @@ class Bench
       RubyVM.reset_debug_counters
     end
     if defined?(RubyVM::MJIT) && RubyVM::MJIT.enabled?
-      RubyVM::MJIT.pause
-      app.call(env.dup) # issue recompile
+      RubyVM::MJIT.pause # compile all
       RubyVM::MJIT.resume
-      RubyVM::MJIT.pause # finish recompile
       app.call(env.dup) # issue recompile
-      RubyVM::MJIT.resume
       RubyVM::MJIT.pause # finish recompile
-      app.call(env.dup)
+      RubyVM::MJIT.resume
+      app.call(env.dup) # issue recompile
+      RubyVM::MJIT.pause # finish recompile
+      RubyVM::MJIT.resume
+      app.call(env.dup) # issue recompile
+      RubyVM::MJIT.pause # finish recompile
+      app.call(env.dup) # warmup
     end
 
     if use_perf = ENV.key?('PERF')
