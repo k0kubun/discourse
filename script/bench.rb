@@ -70,9 +70,10 @@ begin
   require 'facter'
   raise LoadError if Gem::Version.new(Facter.version) < Gem::Version.new("4.0")
 rescue LoadError
-  run "gem install facter"
-  puts "please rerun script"
-  exit
+  # Ruby 3 support not released yet. We don't use it here anyway
+  #run "gem install facter"
+  #puts "please rerun script"
+  #exit
 end
 
 @timings = {}
@@ -208,6 +209,7 @@ begin
     puts "precompiling assets"
     run("bundle exec rake assets:precompile")
   end
+  return # use bin/bench for actual benchmarking.
 
   pid =
     if @unicorn
@@ -335,5 +337,5 @@ begin
   end
 
 ensure
-  Process.kill "KILL", pid
+  #Process.kill "KILL", pid
 end
