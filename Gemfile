@@ -123,7 +123,7 @@ gem 'mini_scheduler'
 
 gem 'execjs', require: false
 gem 'mini_racer'
-gem 'psych', '< 4' # building mini_racer relies on .unsafe_load by .load
+gem 'libv8-node', git: 'https://github.com/k0kubun/ruby-libv8-node'
 
 gem 'highline', require: false
 
