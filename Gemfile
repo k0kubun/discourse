@@ -124,6 +124,7 @@ gem 'mini_scheduler'
 gem 'execjs', require: false
 gem 'mini_racer'
 gem 'libv8-node', git: 'https://github.com/k0kubun/ruby-libv8-node'
+gem 'psych', '< 4' # en.yml uses aliases
 
 gem 'highline', require: false
 
@@ -207,7 +208,7 @@ gem 'ruby-readability', require: false
 gem 'stackprof', require: false, platform: :mri
 gem 'memory_profiler', require: false, platform: :mri
 
-gem 'cppjieba_rb', require: false
+gem 'cppjieba_rb', '0.3.3', require: false
 
 gem 'lograge', require: false
 gem 'logstash-event', require: false
